@@ -1,7 +1,6 @@
-import { NextApiResponse, NextApiRequest } from 'next'
 import app from '../../utils/firebase'
 
-const requestStudents = async (): Promise<string[]> => {
+const requestStudents = async () => {
 	return new Promise(async (resolve) => {
 		const stuRef = app.firestore().collection('student').get()
 		const data = await stuRef.then((data) => data.docs.map((d) => d.id))
@@ -9,6 +8,6 @@ const requestStudents = async (): Promise<string[]> => {
 	})
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req, res) => {
 	await requestStudents().then(res.json)
 }

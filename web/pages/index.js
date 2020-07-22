@@ -1,86 +1,118 @@
 import React, { useState } from 'react'
 import Head from 'next/head'
+import Router from 'next/router'
+import axios from 'axios'
+import swal from 'sweetalert'
+import ClockLoader from 'react-spinners/ClockLoader'
 
-export default function Home() {
-	const [flag, setFlag] = useState(false)
-	const [hasError, setHasError] = useState(false)
-	const [hasChecked, setHasChecked] = useState(false)
+const Home = () => {
+	const [ roomId, setRoomId ] = useState('')
+	const [ password, setPassword ] = useState('')
+	const [ stuId, setStuId ] = useState('')
+	const [ loading, setLoading ] = useState(false)
+
+	const handleCheckAttendance = async (e) => {
+		e.preventDefault()
+		setLoading(true)
+		if (!roomId || !password || !stuId) {
+			swal('Error', 'Please enter all fields', 'error')
+		}
+		const response = await axios.post('/api/checkFromWeb', { roomId, password, stuId })
+		const { result, message, subCode } = response.data
+		if (result === 'success') {
+			await handleFetchInfo(subCode).then((data) => {
+				if (data['recordedAt']) {
+					setLoading(false)
+					Router.push({
+						pathname: '/result',
+						query: {
+							stuName: data.studentName,
+							subName: data.subjectName,
+							subInstruc: data.subjectInstructor,
+							recordedAt: data.recordedAt
+						}
+					})
+				} else {
+					setLoading(false)
+					Router.push({
+						pathname: '/result',
+						query: {
+							stuName: data.studentName,
+							subName: data.subjectName,
+							subInstruc: data.subjectInstructor,
+							recordedAt: null
+						}
+					})
+				}
+			})
+		} else {
+			setLoading(false)
+			swal(result.toUpperCase(), message, result)
+		}
+	}
+
+	const handleFetchInfo = async (subCode) => {
+		return new Promise(async (resolve) => {
+			const response = await axios.post('/api/fetchInfo', {
+				stuId,
+				subCode
+			})
+			const data = response.data
+			resolve(data)
+		})
+	}
+
 	return (
 		<div className='container'>
 			<Head>
-				<title>Face Voice Attendance</title>
+				<title>FVA</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
-
 			<main className='w-screen h-screen bg-blue-400 flex justify-center items-center'>
-				{flag ? (
-					<form className='relative p-2 mt-2 w-1/4'>
-						{hasError ? (
-							<p className='text-xl text-red-500 text-center border-4 border-red-500 my-3 p-3 font-bold rounded-lg'>
-								Please recheck all fields again!
-							</p>
-						) : null}
+				{loading ? (
+					<ClockLoader size={85} color={'#ffffff'} loading={loading} />
+				) : (
+					<form className='relative p-2 mt-2 w-1/4' onSubmit={handleCheckAttendance}>
+						{/* <button onClick={createNewSchedule}>Click me</button> */}
+						{/* <button onClick={checkFromJetson}>Click me</button> */}
 						<input
 							type='text'
 							className='w-full text-2xl py-1 bg-transparent border-b-2 border-white outline-none text-white placeholder-white'
 							placeholder='enter your room'
 							id='room'
-						></input>
+							value={roomId}
+							onChange={(e) => setRoomId(e.target.value)}
+							autoComplete='off'
+						/>
 						<input
 							type='password'
 							className='w-full text-2xl py-1 bg-transparent border-b-2 border-white outline-none placeholder-white mt-5  text-white'
 							placeholder='password'
 							id='password'
-						></input>
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+							autoComplete='off'
+						/>
 						<input
+							type='text'
 							className='w-full text-2xl py-1 bg-transparent border-b-2 border-white outline-none placeholder-white mt-5 text-white'
 							placeholder='student ID'
 							id='student ID'
-						></input>
-						<button className='float-right py-2 px-5 border-2 border-white mt-4 uppercase font-bold text-white text-center'>
+							value={stuId}
+							onChange={(e) => setStuId(e.target.value)}
+							autoComplete='off'
+						/>
+						<button
+							className='float-right py-2 px-5 border-2 border-white mt-4 uppercase font-bold text-white text-center'
+							type='submit'
+						>
 							Next
 						</button>
 					</form>
-				) : hasChecked ? (
-					<div className='w-1/4 bg-white border-2 border-white shawdow-2xl p-2 text-center rounded-md'>
-						<span className='text-2xl font-bold my-3'>Successfully</span>
-						<p className='text-xl my-3'>Nguyễn Phúc Hưng</p>
-						<div className='flex flex-col'>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2 text-center'>Course</p>
-								<p className='inline w-1/2'>Practice on SE</p>
-							</div>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2 text-center'>Instructor</p>
-								<p className='inline w-1/2'>Dr. Quan Thanh Tho</p>
-							</div>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2'>Timeline</p>
-								<p className='inline w-1/2'>4:30 March, 21st, 2020</p>
-							</div>
-						</div>
-					</div>
-				) : (
-					<div className='w-1/4 bg-white border-2 border-white shawdow-2xl p-2 text-center rounded-md'>
-						<span className='text-2xl font-bold my-3'>Failed</span>
-						<p className='text-xl my-3'>Nguyễn Phúc Hưng</p>
-						<div className='flex flex-col'>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2 text-center'>Course</p>
-								<p className='inline w-1/2'>Practice on SE</p>
-							</div>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2 text-center'>Instructor</p>
-								<p className='inline w-1/2'>Dr. Quan Thanh Tho</p>
-							</div>
-							<div className='flex w-full my-3'>
-								<p className='inline font-bold w-1/2'>Timeline</p>
-								<p className='inline w-1/2'>Not yet</p>
-							</div>
-						</div>
-					</div>
 				)}
 			</main>
 		</div>
 	)
 }
+
+export default Home

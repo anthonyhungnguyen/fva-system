@@ -1,24 +1,16 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { NextApiResponse, NextApiRequest } from 'next'
 import app from '../../utils/firebase'
+import moment from 'moment'
 
-const processUnixTime = (unixTimeStamp: number) => {
+const processUnixTime = (unixTimeStamp) => {
 	const date = new Date(unixTimeStamp * 1000)
 	if (process.env.NODE_ENV === 'production') {
 		date.setTime(date.getTime() + 7 * 60 * 60 * 1000)
 	}
-
-	const hours = date.getHours()
-	const minutes = '0' + date.getMinutes()
-	const seconds = '0' + date.getSeconds()
-	const day = date.getDate()
-	const month = date.getMonth()
-	const year = date.getFullYear()
-	const formattedTime = `${day}-${month + 1}-${year} ${hours}:${minutes.substr(-2)}:${seconds.substr(-2)}`
+	const formattedTime = moment(date).format('DD-MM-YYYY HH:MM')
 	return formattedTime
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+export default async (req, res) => {
 	const { stuId, subCode } = req.body
 	const stuRef = app.firestore().collection('student').get()
 	const choosenStu = (await stuRef).docs.find((d) => d.id === stuId)
@@ -26,8 +18,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 	const subRef = app.firestore().collection('subject').get()
 	const choosenSub = (await subRef).docs.find((d) => d.id === subCode)
 
-	const now = new Date()
-	const today = `${now.getDate()}-${now.getMonth() + 1}-${now.getFullYear()}`
+	const today = moment(new Date()).format('DD-M-YYYY')
 	const repRef = app.firestore().collection('report').get()
 	const choosenRep = (await repRef).docs.find((d) => d.id === today)
 	let formattedTime = null
