@@ -15,6 +15,9 @@ if args['mic']:
 else:
     MIC_ID = None
 
+if not os.path.exists('data'):
+    os.makedirs('data')
+
 if not os.path.exists(f'data/{args["name"]}'):
     os.mkdir(f'data/{args["name"]}')
 

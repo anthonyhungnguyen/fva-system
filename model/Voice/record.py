@@ -12,6 +12,9 @@ ap.add_argument('-c', '--count', required=True, help='Input times')
 ap.add_argument('-m', '--mic', required=False, help='Input mic id', default=None)
 args = vars(ap.parse_args())
 
+if not os.path.exists('data'):
+    os.makedirs('data')
+
 if not os.path.exists(f'data/{args["name"]}'):
     os.mkdir(f'data/{args["name"]}')
 
@@ -30,7 +33,6 @@ while count < int(args['count']):
 
     wave_output_filename = f"data/{args['name']}/{count}.wav"
     p = pyaudio.PyAudio()
-    print("Input Device id ", 1, " - ", p.get_device_info_by_host_api_device_index(0, 1).get('name'))
     stream = p.open(format=FORMAT,
                     channels=CHANNELS,
                     rate=RATE,
