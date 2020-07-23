@@ -54,4 +54,7 @@ def mix_bg(data, noise_path):
     return wav_with_bg
 
 
+if not os.path.exists('augmented_data'):
+    os.makedirs('augmented_data')
+
 augment_data()

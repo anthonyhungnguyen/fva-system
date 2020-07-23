@@ -26,6 +26,8 @@ facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.
 SCALE = 1
 i = 0
 flag = True
+if not os.path.exists('data'):
+    os.makedirs('data')
 if not os.path.exists(f'data/{args["name"]}'):
     os.makedirs(f'data/{args["name"]}')
 while flag:
