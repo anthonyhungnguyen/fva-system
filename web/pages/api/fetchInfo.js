@@ -12,7 +12,7 @@ const processUnixTime = (unixTimeStamp) => {
 
 export default async (req, res) => {
 	const { stuId, subCode } = req.body
-	const stuRef = app.firestore().collection('student').get()
+	const stuRef = app.firestore().collection('student').get().docs
 	const choosenStu = (await stuRef).docs.find((d) => d.id === stuId)
 
 	const subRef = app.firestore().collection('subject').get()

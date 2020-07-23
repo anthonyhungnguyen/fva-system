@@ -73,8 +73,6 @@ const Home = () => {
 					<ClockLoader size={85} color={'#ffffff'} loading={loading} />
 				) : (
 					<form className='relative p-2 mt-2 w-1/4' onSubmit={handleCheckAttendance}>
-						{/* <button onClick={createNewSchedule}>Click me</button> */}
-						{/* <button onClick={checkFromJetson}>Click me</button> */}
 						<input
 							type='text'
 							className='w-full text-2xl py-1 bg-transparent border-b-2 border-white outline-none text-white placeholder-white'

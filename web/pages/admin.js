@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Calendar from 'react-calendar'
+import Head from 'next/head'
 import moment from 'moment'
 
 const Admin = () => {
 	const [ availableDates, setAvailableDates ] = useState([])
 	const [ tables, setTables ] = useState(null)
+	const [ isScheduleCreated, setIsScheduleCreated ] = useState(false)
 
-	useEffect(() => {
-		const getAvailableDates = async () => {
-			const response = await axios.get('/api/fetchAvailableDates')
-			setAvailableDates(response.data)
-		}
-		getAvailableDates()
-	}, [])
+	useEffect(
+		() => {
+			const getAvailableDates = async () => {
+				const response = await axios.get('/api/fetchAvailableDates')
+				setAvailableDates(response.data)
+			}
+			const checkNeedCreatingSchedule = () => {
+				const isCreated = availableDates.includes(moment().format('DD-M-YYYY'))
+				setIsScheduleCreated(isCreated)
+			}
+			if (availableDates.length === 0) {
+				getAvailableDates()
+			} else {
+				checkNeedCreatingSchedule()
+			}
+		},
+		[ availableDates ]
+	)
 
 	const createSchedule = async () => {
 		await axios.post('/api/create', {
@@ -91,23 +103,40 @@ const Admin = () => {
 			</table>
 		)
 	}
-
 	return (
-		<div className='bg-blue-300'>
-			<div className='flex justify-around'>
-				<button onClick={createSchedule} className='p-4 m-2 bg-white text-lg font-bold'>
-					Click to create schedule
-				</button>
-			</div>
+		<div>
+			<Head>
+				<title>FVA - Admin</title>
+				<link rel='icon' href='/favicon.ico' />
+			</Head>
+			<div className='bg-blue-300'>
+				<div className='flex flex-col h-screen'>
+					<div className='flex justify-around mt-2'>
+						<button
+							onClick={createSchedule}
+							className={
+								isScheduleCreated ? (
+									'p-4 bg-gray-600 text-lg font-bold text-gray-500 w-1/3'
+								) : (
+									'p-4 bg-white text-lg font-bold'
+								)
+							}
+							disabled={isScheduleCreated}
+						>
+							Click to create schedule
+						</button>
 
-			<div className='flex items-center justify-around h-screen'>
-				<Calendar
-					onChange={async (value, event) => {
-						const formatDate = moment(value).format('DD-M-YYYY')
-						await generateReport(formatDate)
-					}}
-				/>
-				{tables}
+						<select
+							onChange={async (e) => {
+								await generateReport(e.target.value)
+							}}
+							className='p-3 w-1/3'
+						>
+							{availableDates.map((a) => <option value={a}>{a}</option>)}
+						</select>
+					</div>
+					<div className='flex justify-center items-center h-screen'>{tables}</div>
+				</div>
 			</div>
 		</div>
 	)

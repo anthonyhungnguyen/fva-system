@@ -1,5 +1,5 @@
 import app from '../../utils/firebase'
-import { transferDayToRealWeekDay, getTimeNow } from '../../utils/supplement'
+import { getTimeNow } from '../../utils/supplement'
 
 const queryListOfHours = (id, dayOfWeek) => {
 	return new Promise(async (resolve) => {
