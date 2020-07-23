@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="15da225c-16b0-44dd-a1da-c0589e97ec84" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Face/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Face/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Face/record_face.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Face/record_face.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/augment.py" beforeDir="false" afterPath="$PROJECT_DIR$/augment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/record.py" beforeDir="false" afterPath="$PROJECT_DIR$/record.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Voice/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Voice/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Voice/record.py" beforeDir="false" afterPath="$PROJECT_DIR$/../Voice/record.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +64,7 @@
       <workItem from="1595414483391" duration="1746000" />
       <workItem from="1595493109237" duration="389000" />
       <workItem from="1595493811521" duration="1017000" />
-      <workItem from="1595517690129" duration="227000" />
+      <workItem from="1595517690129" duration="823000" />
     </task>
     <servers />
   </component>
