@@ -43,14 +43,14 @@ const checkRoomAvailable = async (roomID) => {
 
 const checkAttendance = async (roomId, password, stuId) => {
 	return new Promise(async (resolve) => {
-		const roomFlag = await checkRoomAvailable(roomId).then(async (roomFlag) => {
+		await checkRoomAvailable(roomId).then(async (roomFlag) => {
 			if (!roomFlag) {
-				resolve({ result: 'error', message: `Room ID doesn't exist` })
+				resolve({ result: 'error', message: `Please re-check all fields` })
 			} else {
 				const { currentSubject, code } = await requestDeviceStatusAndCurrentSubject(roomId)
 				if (currentSubject) {
 					if (password !== code) {
-						resolve({ result: 'error', message: `Wrong password, please re-do again` })
+						resolve({ result: 'error', message: `Please re-check all fields` })
 					}
 					const stdFlag = await checkStudentAvailable(currentSubject, stuId)
 
