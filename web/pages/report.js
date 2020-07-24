@@ -34,7 +34,7 @@ const Admin = () => {
 			const recordedAt = Object.values(data[i]).map((e) => {
 				if (e['recordedAt']) {
 					const date = new Date(e['recordedAt']['seconds'] * 1000)
-					const formatDate = moment(date).format('DD-M-YYYY')
+					const formatDate = moment(date).format('DD-M-YYYY HH:MM')
 					return formatDate
 				}
 				return null
