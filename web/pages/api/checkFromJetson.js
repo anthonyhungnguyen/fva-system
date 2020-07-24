@@ -50,7 +50,7 @@ const checkAttendance = async (roomId, stuId) => {
 		// }
 		await requestDeviceStatusAndCurrentSubject(roomId).then(async ({ currentSubject, code }) => {
 			if (currentSubject) {
-				const flag = await checkStudentInList(currentSubject, stuId)
+				const flag = await checkStudentAvailable(currentSubject, stuId)
 				if (flag) {
 					await tickAttendance(currentSubject, stuId)
 					resolve({
