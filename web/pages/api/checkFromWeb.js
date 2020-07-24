@@ -1,6 +1,5 @@
 import app from '../../utils/firebase'
 import { getTimeNow } from '../../utils/supplement'
-import axios from 'axios'
 import moment from 'moment'
 
 const requestDeviceStatusAndCurrentSubject = async (roomId) => {

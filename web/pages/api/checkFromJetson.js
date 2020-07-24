@@ -72,7 +72,7 @@ const checkAttendance = async (roomId, stuId) => {
 }
 
 const tickAttendance = async (subCode, stuId) => {
-	const now = getTimeNow()
+	const now = new Date()
 	const today = moment(now).format('DD-M-YYYY')
 	const repRef = app.firestore().collection('report').doc(today).get()
 	const studentList = (await repRef).data()
