@@ -26,28 +26,27 @@ const requestDeviceStatusAndCurrentSubject = async (roomId, date, currentTime) =
 
 const checkStudentAvailable = async (subCode, stuId) => {
 	return new Promise(async (resolve) => {
-		const subRef = app.firestore().collection('subject').get()
-		const subject = (await subRef).docs.find((s) => s.id === subCode)
-		console.log(subject)
+		const subRef = await app.firestore().collection('subject').get()
+		const subject = subRef.docs.find((s) => s.id === subCode)
 		const isFound = subject.data().studentList.includes(stuId)
 		resolve(isFound)
 	})
 }
 
-// const checkRoomAvailable = async (roomID) => {
-// 	return new Promise(async (resolve) => {
-// 		const deviceRef = app.firestore().collection('device').get()
-// 		const flag = (await deviceRef).docs.find((d) => d.data()['room'] === roomID)
-// 		resolve(flag)
-// 	})
-// }
+const checkRoomAvailable = async (roomID) => {
+	return new Promise(async (resolve) => {
+		const deviceRef = app.firestore().collection('device').get()
+		const flag = (await deviceRef).docs.find((d) => d.data()['room'] === roomID)
+		resolve(flag)
+	})
+}
 
 const checkAttendance = async (roomId, stuId) => {
 	return new Promise(async (resolve) => {
-		// const roomFlag = await checkRoomAvailable(roomId)
-		// if (!roomFlag) {
-		// 	resolve({ result: 'error', message: `Room ID doesn't exist` })
-		// }
+		const roomFlag = await checkRoomAvailable(roomId)
+		if (!roomFlag) {
+			resolve({ result: 'error', message: `Room ID doesn't exist` })
+		}
 		await requestDeviceStatusAndCurrentSubject(roomId).then(async ({ currentSubject, code }) => {
 			if (currentSubject) {
 				const flag = await checkStudentAvailable(currentSubject, stuId)
@@ -72,8 +71,7 @@ const checkAttendance = async (roomId, stuId) => {
 }
 
 const tickAttendance = async (subCode, stuId) => {
-	const now = new Date()
-	const today = moment(now).format('DD-M-YYYY')
+	const today = moment(new Date()).format('DD-M-YYYY')
 	const repRef = app.firestore().collection('report').doc(today).get()
 	const studentList = (await repRef).data()
 	studentList[subCode][stuId] = { hasCheck: true, recordedAt: now }
