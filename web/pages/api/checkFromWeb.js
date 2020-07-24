@@ -43,30 +43,32 @@ const checkRoomAvailable = async (roomID) => {
 
 const checkAttendance = async (roomId, password, stuId) => {
 	return new Promise(async (resolve) => {
-		const roomFlag = await checkRoomAvailable(roomId)
-		if (!roomFlag) {
-			resolve({ result: 'error', message: `Room ID doesn't exist` })
-		}
-		const { currentSubject, code } = await requestDeviceStatusAndCurrentSubject(roomId)
-		if (currentSubject) {
-			if (password !== code) {
-				resolve({ result: 'error', message: `Wrong password, please re-do again` })
-			}
-			const stdFlag = await checkStudentAvailable(currentSubject, stuId)
-
-			if (!stdFlag) {
-				resolve({ result: 'error', message: 'You do not belong to this class' })
+		const roomFlag = await checkRoomAvailable(roomId).then(async (roomFlag) => {
+			if (!roomFlag) {
+				resolve({ result: 'error', message: `Room ID doesn't exist` })
 			} else {
+				const { currentSubject, code } = await requestDeviceStatusAndCurrentSubject(roomId)
+				if (currentSubject) {
+					if (password !== code) {
+						resolve({ result: 'error', message: `Wrong password, please re-do again` })
+					}
+					const stdFlag = await checkStudentAvailable(currentSubject, stuId)
+
+					if (!stdFlag) {
+						resolve({ result: 'error', message: 'You do not belong to this class' })
+					} else {
+						resolve({
+							result: 'success',
+							message: `Success`,
+							subCode: currentSubject
+						})
+					}
+				}
 				resolve({
-					result: 'success',
-					message: `Success`,
-					subCode: currentSubject
+					result: 'error',
+					message: 'No class is taking place right now!'
 				})
 			}
-		}
-		resolve({
-			result: 'error',
-			message: 'No class is taking place right now!'
 		})
 	})
 }
