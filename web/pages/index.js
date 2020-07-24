@@ -13,10 +13,11 @@ const Home = () => {
 
 	const handleCheckAttendance = async (e) => {
 		e.preventDefault()
-		setLoading(true)
 		if (!roomId || !password || !stuId) {
 			swal('Error', 'Please enter all fields', 'error')
+			return
 		}
+		setLoading(true)
 		const response = await axios.post('/api/checkFromWeb', { roomId, password, stuId })
 		const { result, message, subCode } = response.data
 		if (result === 'success') {

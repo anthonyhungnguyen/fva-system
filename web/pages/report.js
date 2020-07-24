@@ -6,32 +6,15 @@ import moment from 'moment'
 const Admin = () => {
 	const [ availableDates, setAvailableDates ] = useState([])
 	const [ tables, setTables ] = useState(null)
-	const [ isScheduleCreated, setIsScheduleCreated ] = useState(false)
 
-	useEffect(
-		() => {
-			const getAvailableDates = async () => {
-				const response = await axios.get('/api/fetchAvailableDates')
-				setAvailableDates(response.data)
-			}
-			const checkNeedCreatingSchedule = () => {
-				const isCreated = availableDates.includes(moment().format('DD-M-YYYY'))
-				setIsScheduleCreated(isCreated)
-			}
-			if (availableDates.length === 0) {
-				getAvailableDates()
-			} else {
-				checkNeedCreatingSchedule()
-			}
-		},
-		[ availableDates ]
-	)
-
-	const createSchedule = async () => {
-		await axios.post('/api/create', {
-			id: 0
-		})
-	}
+	useEffect(() => {
+		const getAvailableDates = async () => {
+			const response = await axios.get('/api/fetchAvailableDates')
+			const data = response.data.sort((a, b) => moment(b, 'DD-M-YYYY') - moment(a, 'DD-M-YYYY'))
+			setAvailableDates(data)
+		}
+		getAvailableDates()
+	}, [])
 
 	const generateReport = async (choosenDate) => {
 		const haveDate = availableDates.includes(choosenDate)
@@ -106,33 +89,23 @@ const Admin = () => {
 	return (
 		<div>
 			<Head>
-				<title>FVA - Admin</title>
+				<title>FVA - Report</title>
 				<link rel='icon' href='/favicon.ico' />
 			</Head>
 			<div className='bg-blue-300'>
 				<div className='flex flex-col h-screen'>
 					<div className='flex justify-around mt-2'>
-						<button
-							onClick={() => createSchedule()}
-							className={
-								isScheduleCreated ? (
-									'p-4 bg-gray-600 text-lg font-bold text-gray-500 w-1/3'
-								) : (
-									'p-4 bg-white text-lg font-bold'
-								)
-							}
-							disabled={isScheduleCreated}
-						>
-							Create today schedule
-						</button>
-
 						<select
 							onChange={async (e) => {
 								await generateReport(e.target.value)
 							}}
-							className='p-3 w-1/3'
+							className='p-3'
 						>
-							{availableDates.map((a) => <option value={a}>{a}</option>)}
+							{availableDates.map((a, k) => (
+								<option value={a} key={k}>
+									{a}
+								</option>
+							))}
 						</select>
 					</div>
 					<div className='flex justify-center items-center h-screen'>{tables}</div>

@@ -1,5 +1,6 @@
 import app from '../../utils/firebase'
 import { getTimeNow } from '../../utils/supplement'
+import axios from 'axios'
 import moment from 'moment'
 
 const requestDeviceStatusAndCurrentSubject = async (roomId) => {
@@ -24,31 +25,46 @@ const requestDeviceStatusAndCurrentSubject = async (roomId) => {
 	})
 }
 
-const checkStudentInList = async (subCode, stuId) => {
+const checkStudentAvailable = async (subCode, stuId) => {
 	return new Promise(async (resolve) => {
 		const subRef = app.firestore().collection('subject').get()
 		const subject = (await subRef).docs.find((s) => s.id === subCode)
+		console.log(subject)
 		const isFound = subject.data().studentList.includes(stuId)
 		resolve(isFound)
 	})
 }
 
+const checkRoomAvailable = async (roomID) => {
+	return new Promise(async (resolve) => {
+		const deviceRef = app.firestore().collection('device').get()
+		const flag = (await deviceRef).docs.find((d) => d.data()['room'] === roomID)
+		resolve(flag)
+	})
+}
+
 const checkAttendance = async (roomId, password, stuId) => {
 	return new Promise(async (resolve) => {
+		const roomFlag = await checkRoomAvailable(roomId)
+		if (!roomFlag) {
+			resolve({ result: 'error', message: `Room ID doesn't exist` })
+		}
+
 		const { currentSubject, code } = await requestDeviceStatusAndCurrentSubject(roomId)
 		if (currentSubject) {
 			if (password !== code) {
-				resolve({ result: 'error', message: `Wrong password, please re-do agan'` })
+				resolve({ result: 'error', message: `Wrong password, please re-do again` })
 			}
-			const flag = await checkStudentInList(currentSubject, stuId)
-			if (flag) {
+			const stdFlag = await checkStudentAvailable(currentSubject, stuId)
+
+			if (!stdFlag) {
+				resolve({ result: 'error', message: 'You do not belong to this class' })
+			} else {
 				resolve({
 					result: 'success',
 					message: `Success`,
 					subCode: currentSubject
 				})
-			} else {
-				resolve({ result: 'error', message: 'You do not belong to this class' })
 			}
 		}
 		resolve({
