@@ -35,20 +35,20 @@ const checkStudentAvailable = async (subCode, stuId) => {
 	})
 }
 
-const checkRoomAvailable = async (roomID) => {
-	return new Promise(async (resolve) => {
-		const deviceRef = app.firestore().collection('device').get()
-		const flag = (await deviceRef).docs.find((d) => d.data()['room'] === roomID)
-		resolve(flag)
-	})
-}
+// const checkRoomAvailable = async (roomID) => {
+// 	return new Promise(async (resolve) => {
+// 		const deviceRef = app.firestore().collection('device').get()
+// 		const flag = (await deviceRef).docs.find((d) => d.data()['room'] === roomID)
+// 		resolve(flag)
+// 	})
+// }
 
 const checkAttendance = async (roomId, password, stuId) => {
 	return new Promise(async (resolve) => {
-		const roomFlag = await checkRoomAvailable(roomId)
-		if (!roomFlag) {
-			resolve({ result: 'error', message: `Room ID doesn't exist` })
-		}
+		// const roomFlag = await checkRoomAvailable(roomId)
+		// if (!roomFlag) {
+		// 	resolve({ result: 'error', message: `Room ID doesn't exist` })
+		// }
 
 		const { currentSubject, code } = await requestDeviceStatusAndCurrentSubject(roomId)
 		if (currentSubject) {
