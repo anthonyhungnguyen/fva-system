@@ -113,7 +113,7 @@ const Admin = () => {
 				<div className='flex flex-col h-screen'>
 					<div className='flex justify-around mt-2'>
 						<button
-							onClick={createSchedule}
+							onClick={() => createSchedule()}
 							className={
 								isScheduleCreated ? (
 									'p-4 bg-gray-600 text-lg font-bold text-gray-500 w-1/3'
@@ -123,7 +123,7 @@ const Admin = () => {
 							}
 							disabled={isScheduleCreated}
 						>
-							Click to create schedule
+							Create today schedule
 						</button>
 
 						<select
