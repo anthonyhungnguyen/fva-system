@@ -6,7 +6,7 @@ const processUnixTime = (unixTimeStamp) => {
 	if (process.env.NODE_ENV === 'production') {
 		date.setTime(date.getTime() + 7 * 60 * 60 * 1000)
 	}
-	const formattedTime = moment(date).format('DD-MM-YYYY HH:MM')
+	const formattedTime = moment(date).format('MMMM Do YYYY h:mm:ss A')
 	return formattedTime
 }
 
