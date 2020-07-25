@@ -7,14 +7,21 @@ const Admin = () => {
 	const [ availableDates, setAvailableDates ] = useState([])
 	const [ tables, setTables ] = useState(null)
 
-	useEffect(() => {
-		const getAvailableDates = async () => {
-			const response = await axios.get('/api/fetchAvailableDates')
-			const data = response.data.sort((a, b) => moment(b, 'DD-M-YYYY') - moment(a, 'DD-M-YYYY'))
-			setAvailableDates(data)
-		}
-		getAvailableDates()
-	}, [])
+	useEffect(
+		() => {
+			const getAvailableDates = async () => {
+				const response = await axios.get('/api/fetchAvailableDates')
+				const data = response.data.sort((a, b) => moment(b, 'DD-M-YYYY') - moment(a, 'DD-M-YYYY'))
+				setAvailableDates(data)
+			}
+			if (availableDates.length === 0) {
+				getAvailableDates()
+			} else {
+				generateReport(availableDates[0])
+			}
+		},
+		[ availableDates ]
+	)
 
 	const generateReport = async (choosenDate) => {
 		const haveDate = availableDates.includes(choosenDate)
