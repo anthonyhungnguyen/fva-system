@@ -13,7 +13,7 @@ def loadFromPickle(pickleFile):
 
 def faceRequest():
 
-    url = 'http://127.0.0.1:5001/face'
+    url = 'http://34.87.124.252/face'
     while True:
         ret, frame = cam.read()
         data = pickle.dumps(frame, protocol=pickle.HIGHEST_PROTOCOL)

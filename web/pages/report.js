@@ -3,7 +3,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import moment from 'moment'
 
-const Admin = () => {
+const Report = () => {
 	const [ availableDates, setAvailableDates ] = useState([])
 	const [ tables, setTables ] = useState(null)
 
@@ -122,4 +122,4 @@ const Admin = () => {
 	)
 }
 
-export default Admin
+export default Report
